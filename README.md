@@ -1,1 +1,1 @@
-please see https://sconedocs.github.io/iexec_install/
+please see https://sconedocs.github.io/installation/
