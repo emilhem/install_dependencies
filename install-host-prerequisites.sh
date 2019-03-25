@@ -59,7 +59,7 @@ if [[ $installed == "1" ]] ; then
 else 
     TMPDIR=$(mktemp -d)
     cd $TMPDIR
-    curl -o ucode.tgz https://downloadmirror.intel.com/28039/eng/microcode-20180807.tgz 
+    curl -o ucode.tgz https://downloadmirror.intel.com/28087/eng/microcode-20180807a.tgz
     tar -xzf ucode.tgz
     sudo apt-get update
     sudo apt-get install -y intel-microcode
