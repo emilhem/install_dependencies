@@ -123,14 +123,21 @@ fi
 
 verbose "..ensure that we can run docker without sudo"
 
-if getent group docker | grep &>/dev/null "\b${USER}\b"; then
+if getent group ubuntu | grep &>/dev/null "\bubuntu\b"; then
+    verbose "  user and group ubuntu already exist"
+else
+    sudo groupadd ubuntu || verbose "  group ubuntu already exist"
+    sudo adduser --ingroup ubuntu ubuntu || verbose "  user ubuntu already exists!"
+fi
+
+if getent group docker | grep &>/dev/null "\b${ubuntu}\b"; then
     todo=false
 else
     todo=true
 fi
 if [[ $todo == true ]] ; then
     sudo groupadd docker || verbose "  group docker already exist"
-    sudo gpasswd -a $USER docker || verbose "  $USER is already member of group docker"
+    sudo gpasswd -a ubuntu docker || verbose "  ubuntu is already member of group docker"
 fi
 
 verbose "..installing LAS service"
