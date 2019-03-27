@@ -130,7 +130,7 @@ else
     sudo adduser --ingroup ubuntu ubuntu || verbose "  user ubuntu already exists!"
 fi
 
-if getent group docker | grep &>/dev/null "\b${ubuntu}\b"; then
+if getent group docker | grep &>/dev/null "\bubuntu\b"; then
     todo=false
 else
     todo=true
