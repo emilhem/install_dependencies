@@ -144,7 +144,7 @@ verbose "..installing LAS service"
 installed=$(systemctl status las.service | grep "Active: active (running)" | wc -l)
 
 if [[ "$1" == "-f" ]] ; then
-    if [[ $installed > 0 ]] ; then
+    if [[ $installed -gt 0 ]] ; then
         verbose "  force flag given: stopping running las service"
         sudo systemctl stop las.service || verbose "failed to stop las service ... continue anyhow"
         sudo systemctl disable las.service || verbose "failed to disable las service ... continue anyhow"
@@ -152,12 +152,12 @@ if [[ "$1" == "-f" ]] ; then
     fi
 fi
 
-if [[ $installed > 0 ]] ; then
+if [[ $installed -gt 0 ]] ; then
     verbose "  LAS service already installed - skipping"
 else
     if [[ -c /dev/isgx ]]; then
       SGX_DEVICE="/dev/isgx"
-    else if [[ -c /dev/sgx ]]; then
+    elif [[ -c /dev/sgx ]]; then
       SGX_DEVICE="/dev/sgx"
     fi
     mkdir -p /home/ubuntu/las

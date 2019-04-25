@@ -3,7 +3,7 @@ services:
     las:
         image: sconecuratedimages/iexecsgx:las
         devices:
-         - "/dev/isgx"
+         - "$SGX_DEVICE"
         command: las
         tty: true
         ports:
