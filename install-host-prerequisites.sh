@@ -114,8 +114,8 @@ fi
 
 verbose "..installing SGX driver"
 
-if [[ -c /dev/isgx ]]  ; then
-    verbose "  /dev/isgx already installed - skipping"
+if [[ -c /dev/isgx ]] || [[ -c /dev/sgx ]] ; then
+    verbose "  /dev/(i)sgx already installed - skipping"
 else
     curl -fssl https://raw.githubusercontent.com/SconeDocs/SH/master/install_sgx_driver.sh | bash
 fi
