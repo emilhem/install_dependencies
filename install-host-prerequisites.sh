@@ -155,8 +155,14 @@ fi
 if [[ $installed > 0 ]] ; then
     verbose "  LAS service already installed - skipping"
 else
+    if [[ -c /dev/isgx ]]; then
+      SGX_DEVICE="/dev/isgx"
+    else if [[ -c /dev/sgx ]]; then
+      SGX_DEVICE="/dev/sgx"
+    fi
     mkdir -p /home/ubuntu/las
-    mv -f /tmp/las-docker-compose.yml /home/ubuntu/las/docker-compose.yml
+    SGX_DEVICE=$SGX_DEVICE envsubst < /tmp/las-docker-compose.yml > /home/ubuntu/las/docker-compose.yml
+    rm -f /tmp/las-docker-compose.yml
 
     #export DOCKER_CONTENT_TRUST=1
 
