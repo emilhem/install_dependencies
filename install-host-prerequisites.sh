@@ -104,6 +104,7 @@ fi
 
 if [[ ! -f /usr/local/bin/docker ]]; then
     sudo cp -f /tmp/docker /usr/local/bin/docker
+    sudo chmod +x /usr/local/bin/docker
 fi
 
 verbose "..installing docker compose"
