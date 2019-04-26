@@ -1,0 +1,47 @@
+#!/bin/bash
+
+real_docker="/usr/bin/docker"
+
+if [[ -c /dev/sgx ]]; then
+    device="/dev/sgx"
+elif [[ -c /dev/isgx ]]; then
+    device="/dev/isgx"
+fi
+
+if [ "$1" == "run" ]; then
+    run="yes"
+fi
+
+if [ "$#" -eq 0 ] || [ "$run" != "yes" ] || [ "$device" == "" ]; then
+    exec $real_docker "$@"
+fi
+
+found_device="no"
+found_run="no"
+for ARG in "$@";
+do
+    # filter out "--device /dev/(i)sgx" arguments, will add the correct device manually
+    if [ "$ARG" == "--device=/dev/sgx" ] || [ "$ARG" == "--device=/dev/isgx" ]; then
+        continue
+    fi
+
+    if [ "$ARG" == "--device" ]; then
+        found_device="yes"
+        continue
+    fi
+    if [ "$found_device" == "yes" ]; then
+        found_device="no"
+        if [ "$ARG" == "/dev/sgx" ] || [ "$ARG" == "/dev/isgx" ]; then
+            continue
+        else
+            INPUT="$INPUT --device"
+        fi
+    fi
+    INPUT="$INPUT '$ARG'"
+    if [ "$ARG" == "run" ] && [ "$found_run" == "no" ]; then
+        INPUT="$INPUT --device $device"
+        found_run="yes"
+    fi
+done
+
+eval exec $real_docker $INPUT

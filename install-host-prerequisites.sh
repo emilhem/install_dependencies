@@ -50,6 +50,7 @@ verbose "..downloading more files"
 curl -fssl https://raw.githubusercontent.com/scontain/install_dependencies/master/las.service --output /tmp/las.service
 curl -fssl https://raw.githubusercontent.com/scontain/install_dependencies/master/las-docker-compose.yml --output /tmp/las-docker-compose.yml
 curl -fssl https://raw.githubusercontent.com/scontain/install_dependencies/master/microcode-load.service --output /tmp/microcode-load.service
+curl -fssl https://raw.githubusercontent.com/scontain/install_dependencies/master/docker --output /tmp/docker
 
 verbose "..installing microcode update"
 
@@ -99,6 +100,10 @@ if [[ $installed == "1" ]] ; then
     verbose "  docker  already installed - skipping"
 else
     curl -fssl https://raw.githubusercontent.com/SconeDocs/SH/master/install_docker.sh | bash
+fi
+
+if [[ ! -f /usr/local/bin/docker ]]; then
+    sudo cp -f /tmp/docker /usr/local/bin/docker
 fi
 
 verbose "..installing docker compose"
