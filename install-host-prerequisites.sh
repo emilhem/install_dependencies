@@ -166,9 +166,10 @@ else
     elif [[ -c /dev/sgx ]]; then
       SGX_DEVICE="/dev/sgx"
     fi
-    mkdir -p /home/ubuntu/las
-    SGX_DEVICE=$SGX_DEVICE envsubst < /tmp/las-docker-compose.yml > /home/ubuntu/las/docker-compose.yml
-    rm -f /tmp/las-docker-compose.yml
+    sudo mkdir -p /home/ubuntu/las
+    SGX_DEVICE=$SGX_DEVICE envsubst < /tmp/las-docker-compose.yml > /tmp/docker-compose-las.yml
+    sudo mv /tmp/docker-compose-las.yml /home/ubuntu/las/docker-compose.yml
+    sudo rm -f /tmp/las-docker-compose.yml
 
     #export DOCKER_CONTENT_TRUST=1
 
