@@ -60,8 +60,8 @@ if [[ $installed == "1" ]] ; then
 else
     TMPDIR=$(mktemp -d)
     cd $TMPDIR
-    curl -o ucode.tgz https://downloadmirror.intel.com/28087/eng/microcode-20180807a.tgz
-    tar -xzf ucode.tgz
+    git clone https://github.com/intel/Intel-Linux-Processor-Microcode-Data-Files.git
+    cd Intel-Linux-Processor-Microcode-Data-Files
     sudo apt-get update
     sudo apt-get install -y intel-microcode
     if [ -f /sys/devices/system/cpu/microcode/reload ] ; then
@@ -88,7 +88,7 @@ EOF
         sudo systemctl start microcode-load.service
         sudo systemctl enable microcode-load.service || echo "looks like microcode-load.service  is already enabled"
     else
-        echo "Error: is intel-micrcode really installed?"
+        echo "Error: check that package intel-microcode is installed"
     fi
 fi
 
