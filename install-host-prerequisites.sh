@@ -128,21 +128,25 @@ fi
 
 verbose "..ensure that we can run docker without sudo"
 
-if getent group ubuntu | grep &>/dev/null "\bubuntu\b"; then
-    verbose "  user and group ubuntu already exist"
-else
-    sudo groupadd ubuntu || verbose "  group ubuntu already exist"
-    sudo adduser --ingroup ubuntu ubuntu || verbose "  user ubuntu already exists!"
+if [ -z "$SCONE_USER" ]; then
+	SCONE_USER=ubuntu
 fi
 
-if getent group docker | grep &>/dev/null "\bubuntu\b"; then
+if getent group $SCONE_USER | grep &>/dev/null "\b$SCONE_USER\b"; then
+    verbose "  user and group $SCONE_USER already exist"
+else
+    sudo groupadd $SCONE_USER || verbose "  group $SCONE_USER already exist"
+    sudo adduser --ingroup $SCONE_USER $SCONE_USER || verbose "  user $SCONE_USER already exists!"
+fi
+
+if getent group docker | grep &>/dev/null "\b$SCONE_USER\b"; then
     todo=false
 else
     todo=true
 fi
 if [[ $todo == true ]] ; then
     sudo groupadd docker || verbose "  group docker already exist"
-    sudo gpasswd -a ubuntu docker || verbose "  ubuntu is already member of group docker"
+    sudo gpasswd -a $SCONE_USER docker || verbose "  $SCONE_USER is already member of group docker"
 fi
 
 verbose "..installing LAS service"
@@ -166,13 +170,14 @@ else
     elif [[ -c /dev/sgx ]]; then
       SGX_DEVICE="/dev/sgx"
     fi
-    sudo mkdir -p /home/ubuntu/las
+    sudo mkdir -p /home/$SCONE_USER/las
     SGX_DEVICE=$SGX_DEVICE envsubst < /tmp/las-docker-compose.yml > /tmp/docker-compose-las.yml
-    sudo mv /tmp/docker-compose-las.yml /home/ubuntu/las/docker-compose.yml
+    sudo mv /tmp/docker-compose-las.yml /home/$SCONE_USER/las/docker-compose.yml
     sudo rm -f /tmp/las-docker-compose.yml
 
     #export DOCKER_CONTENT_TRUST=1
 
+    sudo sed -i 's/ubuntu/'"$SCONE_USER"'/g' /tmp/las.service
     sudo mv -f /tmp/las.service  /etc/systemd/system/las.service
     sudo docker pull sconecuratedimages/iexecsgx:las
     sudo systemctl daemon-reload
